@@ -32,7 +32,9 @@ export class CPUPlayer extends Player {
       bombs: 0,
       fuses: 0,
       blanks: 0,
+      total: 0,
     };
+    this.statementStats = {};
   }
 
   setAlignment(role) {
@@ -59,20 +61,17 @@ export class CPUPlayer extends Player {
       total: 0,
     };
 
-    console.log(`===${this.name}'s hand===`);
+    // console.log(`===${this.name}'s hand===`);
     this.hand.forEach(card => {
       if (card.value === CARDS.BLANK) this.handStats.blanks++;
       if (card.value === CARDS.FUSE) this.handStats.fuses++;
       if (card.value === CARDS.BOMB) this.handStats.bombs++;
     });
     this.handStats.total = this.hand.length;
-    console.log(this.handStats);
   }
 
   //
   declare() {
-    console.log(this.alignment);
-
     const [x, y] = this.alignment;
     const isInvestigator = this.role === CARDS.INVESTIGATOR;
     const isTerrorist = this.role === CARDS.TERRORIST;
@@ -85,14 +84,14 @@ export class CPUPlayer extends Player {
       // Always true, always bombs
       case x === ALIGNMENTS.GOOD && y === ALIGNMENTS.LAWFUL:
         declaredFuses = fuses;
-        declaredFuses = Boolean(bombs);
+        declaredBomb = Boolean(bombs);
         break;
       // Always true, never bombs
       case x === ALIGNMENTS.GOOD && y === ALIGNMENTS.NEUTRAL:
       case x === ALIGNMENTS.NEUTRAL && y === ALIGNMENTS.LAWFUL && isInvestigator:
       case x === ALIGNMENTS.NEUTRAL && y === ALIGNMENTS.NEUTRAL && isInvestigator:
         declaredFuses = fuses;
-        declaredFuses = false;
+        declaredBomb = false;
         break;
       // Adds 1, random if Bomb
       case x === ALIGNMENTS.GOOD && y === ALIGNMENTS.CHAOTIC && isInvestigator:
@@ -107,59 +106,60 @@ export class CPUPlayer extends Player {
       // Substracs 1, always bombs
       case x === ALIGNMENTS.NEUTRAL && y === ALIGNMENTS.LAWFUL && isTerrorist:
         declaredFuses = fuses - 1;
-        declaredFuses = Boolean(bombs);
+        declaredBomb = Boolean(bombs);
         break;
       // Conditional, random if Bomb
       case x === ALIGNMENTS.NEUTRAL && y === ALIGNMENTS.NEUTRAL && isTerrorist:
         declaredFuses = fuses >= blanks ? 1 : 0;
-        declaredFuses = bombs ? Math.random() >= 0.5 : false;
+        declaredBomb = bombs ? Math.random() >= 0.5 : false;
         break;
       // Adds 2, always bombs
       case x === ALIGNMENTS.NEUTRAL && y === ALIGNMENTS.CHAOTIC && isInvestigator:
         declaredFuses = fuses + 2;
-        declaredFuses = Boolean(bombs);
+        declaredBomb = Boolean(bombs);
         break;
       // At least 2, if Bomb, adds 2, never bombs
       case x === ALIGNMENTS.NEUTRAL && y === ALIGNMENTS.CHAOTIC && isTerrorist:
         declaredFuses = bombs ? fuses + 2 : 1;
-        declaredFuses = false;
+        declaredBomb = false;
         break;
       // Conditional, never bombs
       case x === ALIGNMENTS.EVIL && y === ALIGNMENTS.LAWFUL && isInvestigator:
         declaredFuses = fuses >= blanks ? fuses : fuses - 1;
-        declaredFuses = false;
+        declaredBomb = false;
         break;
       case x === ALIGNMENTS.EVIL && y === ALIGNMENTS.LAWFUL && isTerrorist:
         declaredFuses = bombs ? fuses + 2 : fuses;
-        declaredFuses = false;
+        declaredBomb = false;
         break;
-      // Conditional, always bombs
+      // Conditional, bombs only if lots of fuses
       case x === ALIGNMENTS.EVIL && y === ALIGNMENTS.NEUTRAL && isInvestigator:
         declaredFuses = fuses >= blanks ? fuses : 0;
-        declaredFuses = true;
+        declaredBomb = fuses > blanks;
         break;
       // Always 0, never bombs
       case x === ALIGNMENTS.EVIL && y === ALIGNMENTS.NEUTRAL && isTerrorist:
         declaredFuses = 0;
-        declaredFuses = false;
+        declaredBomb = false;
         break;
       // Always 1, random bombs
       case x === ALIGNMENTS.EVIL && y === ALIGNMENTS.CHAOTIC && isInvestigator:
         declaredFuses = 1;
-        declaredFuses = Math.random() >= 0.5;
+        declaredBomb = Math.random() >= 0.5;
         break;
-      // Random, random bombs
+      // Random, bombs are always true
       case x === ALIGNMENTS.EVIL && y === ALIGNMENTS.CHAOTIC && isTerrorist:
         declaredFuses = Math.floor(Math.random() * (total - 0 + 1));
-        declaredFuses = Math.random() >= 0.5;
+        declaredBomb = true;
         break;
 
       default:
-        console.log('ERROR');
+        console.error('ERROR');
     }
 
     // Out of Range
     if (declaredFuses > total) declaredFuses = total;
+    if (declaredFuses === total && declaredBomb) declaredFuses--;
     if (declaredFuses < 0) declaredFuses = 0;
 
     this.statementStats = defineStatement(declaredFuses, declaredBomb);

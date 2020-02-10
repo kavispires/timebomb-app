@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
 
 import Card from './Card';
+import { CARDS } from '../Game/constants';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,7 +43,11 @@ const Player = ({ player }) => {
     <Paper className={classes.root}>
       <img className={classes.avatar} src={imgUrl} alt={`CPU Player: ${player.name}`} />
       <div className={classes.info}>
-        <Typography className={classes.name}>{player.name}</Typography>
+        <Typography className={classes.name}>
+          <>
+            {player.name} ({player.role === CARDS.TERRORIST ? 'Terrorist' : 'Investigator'})
+          </>
+        </Typography>
         <Typography className={classes.speechBuble}>{player.speech || 'Hello!'}</Typography>
         <div className={classes.cards}>
           {player.hand.map(card => (
