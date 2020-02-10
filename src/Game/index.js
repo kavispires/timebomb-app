@@ -25,7 +25,7 @@ import { Card } from './cards';
 
  */
 
-const DEFAULT_DELAY = 0.1;
+const DEFAULT_DELAY = process.env.NODE_ENV === 'development' ? 0.25 : 1;
 
 export default class GameEngine {
   constructor(appContext, initialState) {
@@ -48,6 +48,10 @@ export default class GameEngine {
 
   get player() {
     return this._player;
+  }
+
+  get CPUPlayers() {
+    return this._players.slice(1);
   }
 
   get message() {
@@ -181,11 +185,24 @@ export default class GameEngine {
     this.message = `Round ${this.round}`;
     await utils.delay(DEFAULT_DELAY);
 
-    // Suffle deck
+    // Suffle deck and deal cards
     this.message = `Dealing hands`;
-    console.log('ARRAY?', Array.isArray(this.deck));
     const roundDeck = utils.shuffle(this.deck);
     console.log(roundDeck);
+
+    for (let i = 0; i < this._players.length; i++) {
+      this._players[i].setHand(roundDeck.splice(0, 6 - this.round));
+      if (this._players[i].isCPU) this._players[i].declare(); // remove
+      this.forceUpdate();
+      await utils.delay(DEFAULT_DELAY);
+    }
+
+    // this._players.forEach(async player => {
+    //   await utils.delay(DEFAULT_DELAY);
+    //   player.setHand(roundDeck.splice(0, 6 - this.round));
+    //   console.log('here');
+    //   this.forceUpdate();
+    // });
   }
 
   async endRound() {

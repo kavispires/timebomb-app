@@ -67,10 +67,27 @@ const getUniqueElement = (array, reference, property) => {
  */
 const getRandomIndex = array => Math.floor(Math.random() * array.length);
 
+/**
+ * Generates sequential stringifed number id
+ * @param {array} array
+ * @returns {string}
+ */
+const generateId = (function() {
+  let lastId = 0;
+
+  function g(prefix = '') {
+    lastId++;
+    return `${prefix}${lastId}`;
+  }
+
+  return g;
+})();
+
 export default {
   delay,
-  shuffle,
+  generateId,
   getRandomElement,
   getRandomIndex,
   getUniqueElement,
+  shuffle,
 };

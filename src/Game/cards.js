@@ -1,19 +1,10 @@
-// Generates sequential card id
-const generateCardId = (function() {
-  let lastId = 0;
-
-  function g() {
-    lastId++;
-    return lastId;
-  }
-
-  return g;
-})();
+import utils from './utils';
 
 // Card Class
 export class Card {
   constructor(value) {
     this.value = value;
-    this.id = generateCardId();
+    this.id = utils.generateId();
+    this.isFaceUp = false;
   }
 }

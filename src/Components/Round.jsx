@@ -2,6 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Typography, CircularProgress } from '@material-ui/core';
 
+import Player from './Player';
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -25,10 +27,15 @@ const Round = ({ game }) => {
 
   return (
     <div className={classes.root}>
-      <CircularProgress />
-      <Paper className={classes.message} bgcolor="red">
-        <Typography variant="h4">{game.message}</Typography>
-      </Paper>
+      {game.CPUPlayers.map(player => (
+        <Player key={player.id} player={player} />
+      ))}
+      <div>
+        <CircularProgress />
+        <Paper className={classes.message} bgcolor="red">
+          <Typography variant="h4">{game.message}</Typography>
+        </Paper>
+      </div>
     </div>
   );
 };

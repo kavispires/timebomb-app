@@ -9,12 +9,20 @@ export const CARDS = {
   BOMB: Symbol('BOMB'),
 };
 
+export const ALIGNMENTS = {
+  GOOD: Symbol('GOOD'),
+  EVIL: Symbol('EVIL'),
+  NEUTRAL: Symbol('NEUTRAL'),
+  LAWFUL: Symbol('LAWFUL'),
+  CHAOTIC: Symbol('CHAOTIC'),
+};
+
 /**
  * Alignment Symbols
  */
-export const ALIGNMENT = {
-  GvE: [Symbol('GOOD'), Symbol('NEUTRAL'), Symbol('EVIL')],
-  LxC: [Symbol('LAWFUL'), Symbol('NEUTRAL'), Symbol('CHAOTIC')],
+export const ALIGNMENT_AXIS = {
+  GvE: [ALIGNMENTS.GOOD, ALIGNMENTS.NEUTRAL, ALIGNMENTS.EVIL],
+  LxC: [ALIGNMENTS.LAWFUL, ALIGNMENTS.NEUTRAL, ALIGNMENTS.CHAOTIC],
 };
 
 // /**
@@ -61,21 +69,44 @@ export const CPU_PLAYERS = [
     name: 'Henry',
     gender: 'male',
   },
+  {
+    name: 'Ivan',
+    gender: 'male',
+  },
+  {
+    name: 'Jess',
+    gender: 'female',
+  },
+  {
+    name: 'Kyle',
+    gender: 'male',
+  },
+  {
+    name: 'Leigh',
+    gender: 'female',
+  },
+  {
+    name: 'Mark',
+    gender: 'male',
+  },
+  {
+    name: 'Nina',
+    gender: 'female',
+  },
+  {
+    name: 'Patrick',
+    gender: 'male',
+  },
+  {
+    name: 'Rose',
+    gender: 'female',
+  },
 ];
 
 /**
  * List of Available Colors
  */
-export const COLORS = [
-  'red',
-  'orange',
-  'yellow',
-  'green',
-  'teal',
-  'blue',
-  'purple',
-  'pink',
-];
+export const COLORS = ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'purple', 'pink'];
 
 /**
  * Character Cards quantities depending on player count to determine each player affiliation
